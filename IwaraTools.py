@@ -15,24 +15,23 @@ def validateTitle(title):
 
 class iwaraSpider(scrapy.Spider):
     name = "renamer"
+    logfile = None
 
     def start_requests(self):
         if log:
-            logfile = open(target + "\IwaraToolsLog.txt", "a", encoding="utf-8")
+            self.logfile = open(target + "\IwaraToolsLog.txt", "a", encoding="utf-8")
         for files in os.listdir(target):
             if files.lower().endswith("source.mp4"):
                 url = 'https://www.iwara.tv/videos/'+ files.split("_")[1]
                 request = scrapy.Request(url=url, callback=self.parse)
                 request.cb_kwargs['oldname'] = target + files
-                if log:
-                    request.cb_kwargs['logfile'] = logfile
                 yield request
             elif files.lower().find("source.mp4.")!=-1 and todo:
                 print('发现未完成下载 https://www.iwara.tv/videos/'+ files.split("_")[1])
                 if log:
                     logfile.write( '发现未完成下载 https://www.iwara.tv/videos/'+ files.split("_")[1] +"\n")
 
-    def parse(self, response, oldname, logfile):
+    def parse(self, response, oldname):
         newname = response.css('a.username::text').get() + " - " + response.css('h1.title::text').get()
         newname = validateTitle(newname)
         newname = target + newname + ".mp4"
@@ -41,7 +40,7 @@ class iwaraSpider(scrapy.Spider):
             return
         print(oldname + " 重命名为 " + newname)
         if log:
-            logfile.write( oldname + " 重命名为 " + newname +"\n")
+            self.logfile.write( oldname + " 重命名为 " + newname +"\n")
         os.rename(oldname,newname)
 
 @Gooey(
