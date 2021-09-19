@@ -24,7 +24,8 @@ class iwaraSpider(scrapy.Spider):
                 url = 'https://www.iwara.tv/videos/'+ files.split("_")[1]
                 request = scrapy.Request(url=url, callback=self.parse)
                 request.cb_kwargs['oldname'] = target + files
-                request.cb_kwargs['logfile'] = logfile
+                if log:
+                    request.cb_kwargs['logfile'] = logfile
                 yield request
             elif files.lower().find("source.mp4.")!=-1 and todo:
                 print('发现未完成下载 https://www.iwara.tv/videos/'+ files.split("_")[1])
