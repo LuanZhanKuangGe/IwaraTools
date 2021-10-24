@@ -29,7 +29,7 @@ class iwaraSpider(scrapy.Spider):
             elif files.lower().find("source.mp4.")!=-1 and todo:
                 print('发现未完成下载 https://www.iwara.tv/videos/'+ files.split("_")[1])
                 if log:
-                    logfile.write( '发现未完成下载 https://www.iwara.tv/videos/'+ files.split("_")[1] +"\n")
+                    self.logfile.write( '发现未完成下载 https://www.iwara.tv/videos/'+ files.split("_")[1] +"\n")
 
     def parse(self, response, oldname):
         newname = response.css('a.username::text').get() + " - " + response.css('h1.title::text').get()
